@@ -13,9 +13,17 @@
     "@emotion/styled": "^11.13.5",
     "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.9",
+    "@mui/x-data-grid": "^7.22.3",
+    "@mui/x-data-grid-generator": "^7.22.3",
+    "install": "^0.13.0",
+    "material-ui-phone-input": "^3.0.1",
+    "material-ui-phone-number": "^3.0.0",
+    "mui-phone-number": "^3.0.3",
     "next": "15.0.3",
+    "npm": "^10.9.1",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react-world-flags": "^1.6.0"
   },
   "devDependencies": {
     "eslint": "^8",
