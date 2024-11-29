@@ -24,6 +24,7 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import Flag from "react-world-flags";
 import Alerts from "../components/alerts";
 import PatientDialog from "../components/patient-dialog";
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 
 export default function PatientTable() {
     const [selectedRow, setSelectedRow] = useState(null);
@@ -89,8 +90,6 @@ export default function PatientTable() {
         },
     ]);
 
-
-
     const [alert, setAlert] = useState({
         message: "",
         severity: "",
@@ -118,11 +117,6 @@ export default function PatientTable() {
 
         return "US"; // Retorna la bandera predeterminada si no coincide
     };
-
-
-
-
-
     const columns = [
         {
             field: "avatar",
@@ -240,8 +234,6 @@ export default function PatientTable() {
         setOpenAlert(true);
     };
 
-
-
     const handleDelete = (id) => {
 
 
@@ -267,10 +259,9 @@ export default function PatientTable() {
     const actions = [
         { icon: <DeleteIcon />, name: 'Delete' },
         { icon: <EditIcon />, name: 'Edit' },
+        { icon: <MonitorHeartIcon />, name: 'Medical History' },
 
     ];
-
-
 
     return (
         <Container maxWidth="lg" disableGutters>
@@ -279,8 +270,8 @@ export default function PatientTable() {
             </Typography>
 
             <Tabs value={tabIndex} onChange={handleTabChange} centered>
-                <Tab label="Vista Tabla" />
-                <Tab label="Vista Tarjetas" />
+                <Tab label="Table View" />
+                <Tab label="Card View" />
             </Tabs>
 
             {tabIndex === 0 && (
@@ -295,17 +286,21 @@ export default function PatientTable() {
                         columns={columns.filter((col) => col.field !== "actions")}
                         pageSizeOptions={[5, 10]}
                         getRowId={(row) => row._id}
-                        autoHeight
                         checkboxSelection
                         disableMultipleRowSelection
                         selectionModel={selectedRow ? [selectedRow._id] : []} // Vincula la selección al estado
                         keepNonExistentRowsSelected
-                        onSelectionModelChange={(ids) => {
-                            console.log("Selected IDs:", ids); // Depuración
-                            const selectedId = ids[0]; // Selecciona el primer ID
-                            const selected = rows.find((row) => row._id === selectedId);
-                            console.log("Selected Row:", selected); // Depuración
-                            setSelectedRow(selected || null);
+                        onRowSelectionModelChange={(ids) => {
+                            console.log(ids);
+                            console.log(rows);
+                            console.log('hola');
+                            if (ids.length > 0) {
+                                const selectedId = ids[0]; // ID seleccionado
+                                const selected = rows.find((row) => row._id === selectedId);
+                                setSelectedRow(selected || null); // Guarda el registro seleccionado
+                            } else {
+                                setSelectedRow(null); // Limpia si no hay selección
+                            }
                         }}
                         slots={{
                             toolbar: GridToolbar,
@@ -324,7 +319,6 @@ export default function PatientTable() {
                             "& .MuiDataGrid-row:hover": { backgroundColor: "#f5f5f5" },
                         }}
                     />
-
 
                     <SpeedDial
                         ariaLabel="SpeedDial openIcon example"
@@ -362,10 +356,22 @@ export default function PatientTable() {
                                 }
                             }}
                         />
+                        <SpeedDialAction
+                            icon={<MonitorHeartIcon />}
+                            tooltipTitle="Medical History"
+                            onClick={() => {
+                                if (selectedRow) {
+                                    console.log('Medical History');
+                                } else {
+                                    setAlert({
+                                        message: "No patient selected for medical history",
+                                        severity: "warning",
+                                    });
+                                    setOpenAlert(true);
+                                }
+                            }}
+                        />
                     </SpeedDial>
-
-
-
                 </Paper>
 
             )}
