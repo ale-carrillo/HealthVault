@@ -25,6 +25,8 @@ import Flag from "react-world-flags";
 import Alerts from "../components/alerts";
 import PatientDialog from "../components/patient-dialog";
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import { useRouter } from "next/navigation";
+import ConfirmDialog from "../components/confirmation-dialog";
 
 export default function PatientTable() {
     const [selectedRow, setSelectedRow] = useState(null);
@@ -33,12 +35,20 @@ export default function PatientTable() {
     const rowsPerPage = 10;
     const [openAlert, setOpenAlert] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
     const [action, setAction] = useState("");
+    const router = useRouter();
+
 
     const [patient, setPatient] = useState({
         avatar: "",
         name: "",
         lastName: "",
+        weight: "",
+        height: "",
+        heartrate: "",
+        bloodPressure: "",
+        sugarBlood: "",
         birthDate: "",
         phone: "",
         email: "",
@@ -59,6 +69,11 @@ export default function PatientTable() {
             avatar: "https://i.pravatar.cc/150?img=1",
             name: "Juan",
             lastName: "Pérez",
+            weight: 78,
+            height: 1.75,
+            heartrate: 90,
+            bloodPressure: 120,
+            sugarBlood: 80,
             birthDate: "1990-05-15",
             phone: "+525551234567",
             email: "juan.perez@example.com",
@@ -76,6 +91,11 @@ export default function PatientTable() {
             avatar: "https://i.pravatar.cc/150?img=2",
             name: "María",
             lastName: "López",
+            weight: 78,
+            height: 1.75,
+            heartrate: 90,
+            bloodPressure: 120,
+            sugarBlood: 80,
             birthDate: "1985-10-10",
             phone: "+525551234567",
             email: "maria.lopez@example.com",
@@ -96,26 +116,24 @@ export default function PatientTable() {
     });
 
     const getCountryCode = (phone) => {
-        if (!phone) return "US"; // Retorna la bandera predeterminada si no hay teléfono
+        if (!phone) return "US"; 
 
         const countryMap = {
-            "52": "MX", // México
-            "1": "US", // Estados Unidos
-            "44": "GB", // Reino Unido
-            "33": "FR", // Francia
-            "49": "DE", // Alemania
-            "34": "ES", // España
-            // Agrega más códigos de país si es necesario
+            "52": "MX", 
+            "1": "US", 
+            "44": "GB", 
+            "33": "FR", 
+            "49": "DE", 
+            "34": "ES", 
         };
 
-        // Busca el código de país más largo posible en el mapa
         for (const code in countryMap) {
             if (phone.startsWith(`+${code}`)) {
-                return countryMap[code]; // Retorna el código de bandera correspondiente
+                return countryMap[code]; 
             }
         }
 
-        return "US"; // Retorna la bandera predeterminada si no coincide
+        return "US"; 
     };
     const columns = [
         {
@@ -128,6 +146,38 @@ export default function PatientTable() {
         },
         { field: "name", headerName: "Name", width: 150 },
         { field: "lastName", headerName: "Last Name", width: 150 },
+        {
+            field: "weight",
+            headerName: "Weight (kg)",
+            width: 100,
+            valueFormatter: (value) => `${value} kg`, // Muestra el peso en kg
+          },
+          {
+            field: "height",
+            headerName: "Height (m)",
+            width: 100,
+            valueFormatter: (value) => `${value} m`, // Convierte cm a m
+          },
+            {
+                field: "heartrate",
+                headerName: "Heart Rate",
+                width: 150,
+                valueFormatter: (value) => `${value} bpm`,
+            },
+            {
+                field: "bloodPressure",
+                headerName: "Blood Pressure",
+                width: 150,
+                valueFormatter: (value) => `${value} mmHg`,
+            },
+            {
+                field: "sugarBlood",
+                headerName: "Blood Sugar",
+                width: 150,
+                valueFormatter: (value) => `${value} mg/dL`,
+            },
+
+
         { field: "birthDate", headerName: "Birthdate", width: 150 },
 
 
@@ -147,9 +197,9 @@ export default function PatientTable() {
         },
 
         { field: "email", headerName: "Email", width: 200 },
-        { field: "bloodType", headerName: "Blood Type", width: 120 },
+        { field: "bloodType", headerName: "Blood Type", width: 100 },
         { field: "allergies", headerName: "Allergies", width: 200 },
-        { field: "gender", headerName: "Gender", width: 100 },
+        { field: "gender", headerName: "Gender", width: 80 },
         { field: "familyHistory", headerName: "Family History", width: 200 },
         { field: "medicalHistory", headerName: "Medical History", width: 300 },
         { field: "emergencyContact", headerName: "Emergency Contact", width: 200 },
@@ -235,22 +285,27 @@ export default function PatientTable() {
     };
 
     const handleDelete = (id) => {
-
-
         try {
-            setRows(rows.filter((row) => row._id !== id));
-            setAlert({
-                message: "Patient deleted successfully",
-                severity: "success",
-            });
+          setRows(rows.filter((row) => row._id !== id));
+          setAlert({
+            message: "Patient deleted successfully",
+            severity: "success",
+          });
         } catch (error) {
-            setAlert({
-                message: "Failed to delete patient",
-                severity: "error",
-            });
+          setAlert({
+            message: "Failed to delete patient",
+            severity: "error",
+          });
+        } finally {
+          setOpenAlert(true);
         }
-        setOpenAlert(true);
-    };
+      };
+    
+      // Función para abrir el diálogo de confirmación
+      const confirmDeletion = (id) => {
+        setSelectedRow(id); // Almacena el ID del elemento a eliminar
+        setConfirmOpen(true); // Abre el diálogo
+      };
 
     const handleTabChange = (event, newIndex) => {
         setTabIndex(newIndex);
@@ -288,18 +343,21 @@ export default function PatientTable() {
                         getRowId={(row) => row._id}
                         checkboxSelection
                         disableMultipleRowSelection
-                        selectionModel={selectedRow ? [selectedRow._id] : []} // Vincula la selección al estado
+                        selectionModel={selectedRow ? [selectedRow._id] : []} 
                         keepNonExistentRowsSelected
+                        autosizeOptions={{
+                            columns: ["name", "lastName", "email", "phone", "birthDate", "bloodType", "weight","height"],
+                            includeOutliers: true,
+                            includeHeaders: true,
+                          }}
                         onRowSelectionModelChange={(ids) => {
                             console.log(ids);
-                            console.log(rows);
-                            console.log('hola');
                             if (ids.length > 0) {
-                                const selectedId = ids[0]; // ID seleccionado
+                                const selectedId = ids[0]; 
                                 const selected = rows.find((row) => row._id === selectedId);
-                                setSelectedRow(selected || null); // Guarda el registro seleccionado
+                                setSelectedRow(selected || null); 
                             } else {
-                                setSelectedRow(null); // Limpia si no hay selección
+                                setSelectedRow(null);
                             }
                         }}
                         slots={{
@@ -345,23 +403,22 @@ export default function PatientTable() {
                             tooltipTitle="Delete"
                             onClick={() => {
                                 if (selectedRow) {
-                                    handleDelete(selectedRow._id);
-                                    setSelectedRow(null); // Limpia la selección después de eliminar
+                                  confirmDeletion(selectedRow._id);
                                 } else {
-                                    setAlert({
-                                        message: "No patient selected for deletion",
-                                        severity: "warning",
-                                    });
-                                    setOpenAlert(true);
+                                  setAlert({
+                                    message: "No patient selected for deletion",
+                                    severity: "warning",
+                                  });
+                                  setOpenAlert(true);
                                 }
-                            }}
+                              }}
                         />
                         <SpeedDialAction
                             icon={<MonitorHeartIcon />}
                             tooltipTitle="Medical History"
                             onClick={() => {
                                 if (selectedRow) {
-                                    console.log('Medical History');
+                                    router.push(`/medical-history?id=${selectedRow._id}`);
                                 } else {
                                     setAlert({
                                         message: "No patient selected for medical history",
@@ -378,7 +435,6 @@ export default function PatientTable() {
 
             {tabIndex === 1 && (
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 3 }}>
-                    {/* Tarjetas */}
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
                         {rows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage).map((row) => (
                             <Card key={row._id} sx={{ width: 250, padding: 2 }}>
@@ -398,7 +454,7 @@ export default function PatientTable() {
                                     <IconButton color="primary" onClick={() => handlePatient({ action: "edit", patient: row })}>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton onClick={() => handleDelete(row._id)}>
+                                    <IconButton onClick={() => confirmDeletion(row._id)}>
                                         <DeleteIcon sx={{ color: "#F44336" }} />
                                     </IconButton>
                                 </CardActions>
@@ -406,7 +462,6 @@ export default function PatientTable() {
                         ))}
                     </Box>
 
-                    {/* Paginación */}
                     <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
                         <Button
                             variant="outlined"
@@ -441,6 +496,16 @@ export default function PatientTable() {
                 setOpenAlert={setOpenAlert}
                 handleSave={handleSave}
             />
+            <ConfirmDialog
+        open={confirmOpen}
+        setConfirmOpen={setConfirmOpen}
+        onConfirm={() => {
+          handleDelete(selectedRow); // Llama a handleDelete después de confirmar
+          setSelectedRow(null); // Limpia el elemento seleccionado
+        }}
+      />
+
+            
 
         </Container>
     );

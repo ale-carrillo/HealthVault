@@ -16,6 +16,7 @@ import {
     Radio,
     Typography,
     MenuItem,
+    InputAdornment,
 
 } from "@mui/material";
 import Image from "next/image";
@@ -36,14 +37,7 @@ export default function PatientDialog({
     const [errors, setErrors] = useState({});
 
     const steps = ["Basic Info", "Contact Info", "Medical Info", "Avatar"];
-    const validateAllSteps = () => {
-        let isValid = true;
-        for (let step = 0; step < steps.length; step++) {
-            const valid = validateStep(step);
-            if (!valid) isValid = false;
-        }
-        return isValid;
-    };
+
 
     useEffect(() => {
         if (open) {
@@ -107,6 +101,17 @@ export default function PatientDialog({
             if (!patient.emergencyPhone) newErrors.emergencyPhone = "Emergency Phone is required.";
         } else if (activeStep === 2) {
             if (!patient.bloodType) newErrors.bloodType = "Blood Type is required.";
+            if (!patient.weight || patient.weight <= 0 || patient.weight > 300)
+                newErrors.weight = "Enter a valid weight in kg (0-300).";
+            if (!patient.height || patient.height <= 0 || patient.height > 2.5)
+                newErrors.height = "Enter a valid height in meters (0-2.5).";
+            if (!patient.heartrate || patient.heartRate <= 0 || patient.heartRate > 200)
+                newErrors.heartrate = "Enter a valid heart rate in bpm (0-200).";
+            if (!patient.bloodPressure || patient.bloodPressure <= 0 || patient.bloodPressure > 200)
+                newErrors.bloodPressure = "Enter a valid blood pressure in mmHg (0-200).";
+            if (!patient.sugarBlood || patient.sugarBlood <= 0 || patient.sugarBlood > 200)
+                newErrors.sugarBlood = "Enter a valid sugar blood in mg/dL (0-200).";
+
         }
 
         setErrors(newErrors);
@@ -238,70 +243,176 @@ export default function PatientDialog({
 
                     </Box>
                 );
-            case 2:
-                return (
 
-                    <Box>
-    {/* Blood Type: Lista desplegable */}
-    <TextField
-        select
-        name="bloodType"
-        label="Blood Type"
-        fullWidth
-        margin="normal"
-        value={patient.bloodType || ""}
-        onChange={handleChange}
-        error={!!errors.bloodType}
-        helperText={errors.bloodType}
-        variant="outlined"
-    >
-        {/* Opciones para los tipos de sangre */}
-        {["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"].map((type) => (
-            <MenuItem key={type} value={type}>
-                {type}
-            </MenuItem>
-        ))}
-    </TextField>
+                case 2:
+    return (
+        <Box>
+            {/* Blood Type */}
+            <TextField
+                select
+                name="bloodType"
+                label="Blood Type"
+                fullWidth
+                margin="normal"
+                value={patient.bloodType || ""}
+                onChange={handleChange}
+                error={!!errors.bloodType}
+                helperText={errors.bloodType}
+                variant="outlined"
+            >
+                {["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"].map((type) => (
+                    <MenuItem key={type} value={type}>
+                        {type}
+                    </MenuItem>
+                ))}
+            </TextField>
 
-    {/* Allergies: Campo de texto estándar */}
-    <TextField
-        name="allergies"
-        label="Allergies"
-        fullWidth
-        margin="normal"
-        value={patient.allergies || ""}
-        onChange={handleChange}
-    />
+            {/* Weight */}
+            <TextField
+                name="weight"
+                label="Weight"
+                fullWidth
+                margin="normal"
+                type="number"
+                value={patient.weight || ""}
+                onChange={(event) => {
+                    const value = event.target.value;
+                    if (!isNaN(value) && value >= 0 && value <= 300) {
+                        handleChange(event); // Asegura que el peso sea válido
+                    }
+                }}
+                error={!!errors.weight}
+                helperText={errors.weight || "Enter a valid weight in kg (0-300)"}
+                variant="outlined"
+                InputProps={{
+                    startAdornment: <InputAdornment position="start">kg</InputAdornment>,
+                }}
+            />
 
-    {/* Family History: Multilínea */}
-    <TextField
-        name="familyHistory"
-        label="Family History"
-        fullWidth
-        margin="normal"
-        value={patient.familyHistory || ""}
-        onChange={handleChange}
-        multiline
-        rows={4}
-        variant="outlined"
-    />
+            {/* Height */}
+            <TextField
+                name="height"
+                label="Height"
+                fullWidth
+                margin="normal"
+                type="number"
+                value={patient.height || ""}
+                onChange={(event) => {
+                    const value = event.target.value;
+                    if (!isNaN(value) && value >= 0 && value <= 2.5) {
+                        handleChange(event); // Asegura que la altura sea válida
+                    }
+                }}
+                error={!!errors.height}
+                helperText={errors.height || "Enter a valid height in meters (0-2.5)"}
+                variant="outlined"
+                InputProps={{
+                    startAdornment: <InputAdornment position="start">m</InputAdornment>,
+                }}
+            />
 
-    {/* Medical History: Multilínea */}
-    <TextField
-        name="medicalHistory"
-        label="Medical History"
-        fullWidth
-        margin="normal"
-        value={patient.medicalHistory || ""}
-        onChange={handleChange}
-        multiline
-        rows={4} 
-        variant="outlined"
-    />
-</Box>
+            <TextField
+                name='heartRate'
+                label='Heart Rate'
+                fullWidth
+                margin='normal'
+                type='number'
+                value={patient.heartrate || ''}
+                onChange={(event) => {
+                    const value = event.target.value;
+                    if (!isNaN(value) && value >= 0 && value <= 200) {
+                        handleChange(event); // Asegura que la altura sea válida
+                    }
+                }}
+                error={!!errors.heartrate}
+                helperText={errors.heartrate || "Enter a valid heart rate in bpm (0-200)"}
+                variant="outlined"
+                InputProps={{
+                    startAdornment: <InputAdornment position="start">bpm</InputAdornment>,
+                }}
+            />
+            <TextField
+                name='bloodPressure'
+                label='Blood Pressure'
+                fullWidth
+                margin='normal'
+                type='number'
+                value={patient.bloodPressure || ''}
+                onChange={(event) => {
+                    const value = event.target.value;
+                    if (!isNaN(value) && value >= 0 && value <= 200) {
+                        handleChange(event); // Asegura que la altura sea válida
+                    }
+                }}
+                error={!!errors.bloodPressure}
+                helperText={errors.bloodPressure || "Enter a valid blood pressure in mmHg (0-200)"}
+                variant="outlined"
+                InputProps={{
+                    startAdornment: <InputAdornment position="start">mmHg</InputAdornment>,
+                }}
+                />
+            <TextField
+                name='sugarBlood'
+                label='Sugar Blood'
+                fullWidth
+                margin='normal'
+                type='number'
+                value={patient.sugarBlood || ''}
+                onChange={(event) => {
+                    const value = event.target.value;
+                    if (!isNaN(value) && value >= 0 && value <= 200) {
+                        handleChange(event); // Asegura que la altura sea válida
+                    }
+                }}
+                error={!!errors.sugarBlood}
+                helperText={errors.sugarBlood || "Enter a valid sugar blood in mg/dL (0-200)"}
+                variant="outlined"
+                InputProps={{
+                    startAdornment: <InputAdornment position="start">mg/dL</InputAdornment>,
+                }}
+                />
 
-                   
-                );
+
+            {/* Allergies */}
+            <TextField
+                name="allergies"
+                label="Allergies"
+                fullWidth
+                margin="normal"
+                value={patient.allergies || ""}
+                onChange={handleChange}
+                variant="outlined"
+            />
+
+            {/* Family History */}
+            <TextField
+                name="familyHistory"
+                label="Family History"
+                fullWidth
+                margin="normal"
+                value={patient.familyHistory || ""}
+                onChange={handleChange}
+                multiline
+                rows={4}
+                variant="outlined"
+            />
+
+            {/* Medical History */}
+            <TextField
+                name="medicalHistory"
+                label="Medical History"
+                fullWidth
+                margin="normal"
+                value={patient.medicalHistory || ""}
+                onChange={handleChange}
+                multiline
+                rows={4}
+                variant="outlined"
+            />
+        </Box>
+    );
+
+
             case 3:
                 return (
                     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
