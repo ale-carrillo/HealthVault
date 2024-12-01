@@ -116,74 +116,98 @@ export default function PatientTable() {
     });
 
     const getCountryCode = (phone) => {
-        if (!phone) return "US"; 
+        if (!phone) return "US";
 
         const countryMap = {
-            "52": "MX", 
-            "1": "US", 
-            "44": "GB", 
-            "33": "FR", 
-            "49": "DE", 
-            "34": "ES", 
+            "52": "MX",
+            "1": "US",
+            "44": "GB",
+            "33": "FR",
+            "49": "DE",
+            "34": "ES",
         };
 
         for (const code in countryMap) {
             if (phone.startsWith(`+${code}`)) {
-                return countryMap[code]; 
+                return countryMap[code];
             }
         }
 
-        return "US"; 
+        return "US";
     };
     const columns = [
         {
             field: "avatar",
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
             headerName: "Avatar",
             width: 100,
+
             renderCell: (params) => (
                 <Avatar alt={params.row.name} src={params.value} sx={{ width: 40, height: 40 }} />
             ),
         },
-        { field: "name", headerName: "Name", width: 150 },
-        { field: "lastName", headerName: "Last Name", width: 150 },
+        {
+            field: "name", headerName: "Name", width: 150, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center'
+        },
+        {
+            field: "lastName", headerName: "Last Name", width: 150, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center'
+        },
         {
             field: "weight",
             headerName: "Weight (kg)",
             width: 100,
-            valueFormatter: (value) => `${value} kg`, // Muestra el peso en kg
-          },
-          {
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            valueFormatter: (value) => `${value} kg`, 
+        },
+        {
             field: "height",
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
             headerName: "Height (m)",
             width: 100,
-            valueFormatter: (value) => `${value} m`, // Convierte cm a m
-          },
-            {
-                field: "heartrate",
-                headerName: "Heart Rate",
-                width: 150,
-                valueFormatter: (value) => `${value} bpm`,
-            },
-            {
-                field: "bloodPressure",
-                headerName: "Blood Pressure",
-                width: 150,
-                valueFormatter: (value) => `${value} mmHg`,
-            },
-            {
-                field: "sugarBlood",
-                headerName: "Blood Sugar",
-                width: 150,
-                valueFormatter: (value) => `${value} mg/dL`,
-            },
+            valueFormatter: (value) => `${value} m`,
+        },
+        {
+            field: "heartrate",
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            headerName: "Heart Rate",
+            width: 150,
+            valueFormatter: (value) => `${value} bpm`,
+        },
+        {
+            field: "bloodPressure",
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            headerName: "Blood Pressure",
+            width: 150,
+            valueFormatter: (value) => `${value} mmHg`,
+        },
+        {
+            field: "sugarBlood",
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            headerName: "Blood Sugar",
+            width: 150,
+            valueFormatter: (value) => `${value} mg/dL`,
+        },
 
 
-        { field: "birthDate", headerName: "Birthdate", width: 150 },
+        {
+            field: "birthDate", headerName: "Birthdate", width: 150, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+        },
 
 
         {
             field: "phone",
             headerName: "Phone",
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
             width: 200,
             renderCell: (params) => {
                 const countryCode = getCountryCode(params.value);
@@ -196,15 +220,38 @@ export default function PatientTable() {
             },
         },
 
-        { field: "email", headerName: "Email", width: 200 },
-        { field: "bloodType", headerName: "Blood Type", width: 100 },
-        { field: "allergies", headerName: "Allergies", width: 200 },
-        { field: "gender", headerName: "Gender", width: 80 },
-        { field: "familyHistory", headerName: "Family History", width: 200 },
-        { field: "medicalHistory", headerName: "Medical History", width: 300 },
-        { field: "emergencyContact", headerName: "Emergency Contact", width: 200 },
+        {
+            field: "email", headerName: "Email", width: 200, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+        },
+        {
+            field: "bloodType", headerName: "Blood Type", width: 100, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+        },
+        {
+            field: "allergies", headerName: "Allergies", width: 200, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+        },
+        {
+            field: "gender", headerName: "Gender", width: 80, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+        },
+        {
+            field: "familyHistory", headerName: "Family History", width: 200, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+        },
+        {
+            field: "medicalHistory", headerName: "Medical History", width: 300, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+        },
+        {
+            field: "emergencyContact", headerName: "Emergency Contact", width: 200, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+        },
         {
             field: "emergencyPhone",
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
             headerName: "Emergency Phone",
             width: 200,
             renderCell: (params) => {
@@ -218,14 +265,19 @@ export default function PatientTable() {
             },
         },
 
-        { field: "socialSecurity", headerName: "Social Security", width: 150 },
+        {
+            field: "socialSecurity", headerName: "Social Security", width: 150, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+        },
         {
             field: "actions",
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
             headerName: "Acciones",
             width: 150,
             renderCell: (params) => (
                 <Box>
-                    <IconButton color="primary" onClick={() => handlePatient({ action: "edit", patient: params.row })}>
+                    <IconButton color="primary.main" onClick={() => handlePatient({ action: "edit", patient: params.row })}>
                         <EditIcon />
                     </IconButton>
                     <IconButton onClick={() => handleDelete(params.row.id)}>
@@ -238,9 +290,17 @@ export default function PatientTable() {
 
     const handlePatient = ({ action, patient }) => {
         try {
-            setAction(action);
-            setOpenDialog(true);
-            setPatient(action === "add" ? { ...patient, id: null } : patient);
+            if (action === "medical") {
+                router.push(`/medical-history?id=${patient._id}`);
+                return;
+            } else {
+                setAction(action);
+                setOpenDialog(true);
+                setPatient(action === "add" ? { ...patient, id: null } : patient);
+
+            }
+
+
         } catch (error) {
             setAlert({
                 message: "Failed to open patient dialog",
@@ -286,26 +346,25 @@ export default function PatientTable() {
 
     const handleDelete = (id) => {
         try {
-          setRows(rows.filter((row) => row._id !== id));
-          setAlert({
-            message: "Patient deleted successfully",
-            severity: "success",
-          });
+            setRows(rows.filter((row) => row._id !== id));
+            setAlert({
+                message: "Patient deleted successfully",
+                severity: "success",
+            });
         } catch (error) {
-          setAlert({
-            message: "Failed to delete patient",
-            severity: "error",
-          });
+            setAlert({
+                message: "Failed to delete patient",
+                severity: "error",
+            });
         } finally {
-          setOpenAlert(true);
+            setOpenAlert(true);
         }
-      };
-    
-      // Función para abrir el diálogo de confirmación
-      const confirmDeletion = (id) => {
-        setSelectedRow(id); // Almacena el ID del elemento a eliminar
-        setConfirmOpen(true); // Abre el diálogo
-      };
+    };
+
+    const confirmDeletion = (id) => {
+        setSelectedRow(id); 
+        setConfirmOpen(true);
+    };
 
     const handleTabChange = (event, newIndex) => {
         setTabIndex(newIndex);
@@ -343,19 +402,19 @@ export default function PatientTable() {
                         getRowId={(row) => row._id}
                         checkboxSelection
                         disableMultipleRowSelection
-                        selectionModel={selectedRow ? [selectedRow._id] : []} 
+                        selectionModel={selectedRow ? [selectedRow._id] : []}
                         keepNonExistentRowsSelected
                         autosizeOptions={{
-                            columns: ["name", "lastName", "email", "phone", "birthDate", "bloodType", "weight","height"],
+                            columns: ["name", "lastName", "email", "phone", "birthDate", "bloodType", "weight", "height"],
                             includeOutliers: true,
                             includeHeaders: true,
-                          }}
+                        }}
                         onRowSelectionModelChange={(ids) => {
                             console.log(ids);
                             if (ids.length > 0) {
-                                const selectedId = ids[0]; 
+                                const selectedId = ids[0];
                                 const selected = rows.find((row) => row._id === selectedId);
-                                setSelectedRow(selected || null); 
+                                setSelectedRow(selected || null);
                             } else {
                                 setSelectedRow(null);
                             }
@@ -370,21 +429,24 @@ export default function PatientTable() {
                         }}
                         sx={{
                             "& .MuiDataGrid-columnHeaders": {
-                                backgroundColor: "#333",
-                                color: "#000",
+                                backgroundColor: "#1976d2",
+                                color: "white",
                                 fontWeight: "bold",
                             },
                             "& .MuiDataGrid-row:hover": { backgroundColor: "#f5f5f5" },
+                            '& .super-app-theme--header': {
+                                backgroundColor: 'primary.main',
+                            },
                         }}
                     />
 
                     <SpeedDial
                         ariaLabel="SpeedDial openIcon example"
-                        sx={{ position: 'absolute', bottom: 500, right: 185 }}
+                        sx={{ position: 'absolute', bottom: 400, right: 100 }}
                         icon={<SpeedDialIcon openIcon={<EditIcon />} />}
                     >
                         <SpeedDialAction
-                            icon={<EditIcon />}
+                            icon={<EditIcon sx={{ color: 'secondary.main' }} />}
                             tooltipTitle="Edit"
                             onClick={() => {
                                 if (selectedRow) {
@@ -399,22 +461,22 @@ export default function PatientTable() {
                             }}
                         />
                         <SpeedDialAction
-                            icon={<DeleteIcon />}
+                            icon={<DeleteIcon sx={{ color: 'secondary.main' }} />}
                             tooltipTitle="Delete"
                             onClick={() => {
                                 if (selectedRow) {
-                                  confirmDeletion(selectedRow._id);
+                                    confirmDeletion(selectedRow._id);
                                 } else {
-                                  setAlert({
-                                    message: "No patient selected for deletion",
-                                    severity: "warning",
-                                  });
-                                  setOpenAlert(true);
+                                    setAlert({
+                                        message: "No patient selected for deletion",
+                                        severity: "warning",
+                                    });
+                                    setOpenAlert(true);
                                 }
-                              }}
+                            }}
                         />
                         <SpeedDialAction
-                            icon={<MonitorHeartIcon />}
+                            icon={<MonitorHeartIcon sx={{ color: 'secondary.main' }} />}
                             tooltipTitle="Medical History"
                             onClick={() => {
                                 if (selectedRow) {
@@ -437,7 +499,18 @@ export default function PatientTable() {
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 3 }}>
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
                         {rows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage).map((row) => (
-                            <Card key={row._id} sx={{ width: 250, padding: 2 }}>
+                            <Card
+
+
+                                key={row._id} sx={{
+                                    width: 250, padding: 2, borderRadius: 2,
+                                    boxShadow: 3,
+                                    transition: 'transform 0.2s, box-shadow 0.2s', 
+                                    '&:hover': {
+                                        transform: 'translateY(-5px)',
+                                        boxShadow: 6, 
+                                    }
+                                }}>
                                 <CardContent>
                                     <Avatar src={row.avatar} sx={{ width: 50, height: 50, mb: 2 }} />
                                     <Typography variant="h6">
@@ -451,6 +524,9 @@ export default function PatientTable() {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
+                                    <IconButton color="secondary" onClick={() => handlePatient({ action: "medical", patient: row })}>
+                                        <MonitorHeartIcon />
+                                    </IconButton>
                                     <IconButton color="primary" onClick={() => handlePatient({ action: "edit", patient: row })}>
                                         <EditIcon />
                                     </IconButton>
@@ -497,15 +573,15 @@ export default function PatientTable() {
                 handleSave={handleSave}
             />
             <ConfirmDialog
-        open={confirmOpen}
-        setConfirmOpen={setConfirmOpen}
-        onConfirm={() => {
-          handleDelete(selectedRow); // Llama a handleDelete después de confirmar
-          setSelectedRow(null); // Limpia el elemento seleccionado
-        }}
-      />
+                open={confirmOpen}
+                setConfirmOpen={setConfirmOpen}
+                onConfirm={() => {
+                    handleDelete(selectedRow);
+                    setSelectedRow(null);
+                }}
+            />
 
-            
+
 
         </Container>
     );
