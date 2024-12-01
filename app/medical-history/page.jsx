@@ -193,10 +193,6 @@ export default function MedicalDashboard() {
 
 
         </Grid>
-
-        
-
-
       </Grid>
     </Box>
   );

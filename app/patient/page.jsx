@@ -27,6 +27,7 @@ import PatientDialog from "../components/patient-dialog";
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import { useRouter } from "next/navigation";
 import ConfirmDialog from "../components/confirmation-dialog";
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function PatientTable() {
     const [selectedRow, setSelectedRow] = useState(null);
@@ -394,6 +395,11 @@ export default function PatientTable() {
                         <Button startIcon={<AddIcon />} variant="contained" onClick={() => handlePatient({ action: "add" })}>
                             Add Patient
                         </Button>
+                        <Button startIcon={<SearchIcon/>} variant="contained" sx={{ml:4}} onClick={()=> 
+                            router.push('/advanced-search')
+                        }>
+                            Advanced Search
+                        </Button>
                     </Box>
                     <DataGrid
                         rows={rows}
@@ -580,9 +586,6 @@ export default function PatientTable() {
                     setSelectedRow(null);
                 }}
             />
-
-
-
         </Container>
     );
 }
