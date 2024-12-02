@@ -1,101 +1,176 @@
+"use client";
+
+// Imports.
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
+import BookIcon from '@mui/icons-material/Book';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import VaccinesIcon from '@mui/icons-material/Vaccines';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import {
+  Box,
+  Container,
+  Paper,
+  Typography,
+  Link,
+  useTheme,
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import Image from "next/image";
 
+// Home page.
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  // Theme.
+  const theme = useTheme();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // Options.
+  const options = [
+    {
+      icon: AccountCircleIcon,
+      label: "Patients",
+      href: "/patients"
+    },
+    {
+      icon: BookIcon,
+      label: "Medical Appointments",
+      href: "/medial-appointments"
+    },
+    {
+      icon: VaccinesIcon,
+      label: "Medicines",
+      href: "/medicines"
+    },
+    {
+      icon: LocalHospitalIcon,
+      label: "Doctors",
+      href: "/doctors"
+    },
+    {
+      icon: HistoryEduIcon,
+      label: "Recipes",
+      href: "/Recipes"
+    },
+    {
+      icon: ReceiptIcon,
+      label: "Billing",
+      href: "/billing"
+    },
+  ];
+
+  // Component.
+  return (
+    <Container maxWidth="lg">
+      <Grid container spacing={4} display="flex" justifyContent="center" alignItems="center">
+        {/* Left Buttons (3) */}
+        <Grid item xs={12} md={3} container direction="column" spacing={2} justifyContent="center">
+          {options.slice(0, 3).map((item) => (
+            <Grid item xs={12} key={item.label}>
+              <Link href={item.href} style={{ textDecoration: "none" }}>
+                <Paper
+                  elevation={4}
+                  sx={{
+                    mx: "auto",
+                    p: 4,
+                    height: "200px",
+                    width: "100%",
+                    textAlign: "center",
+                    borderRadius: 15,
+                    "&:hover": {
+                      backgroundColor: theme.palette.secondary.main,
+                      transform: "scale(1.05)",
+                      transition: "transform 0.4s ease-in-out",
+                      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
+                    },
+                    mt: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <item.icon sx={{ fontSize: 55 }} />
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      color: theme.palette.primary.main,
+                      fontSize: "1.6rem",
+                    }}
+                  >
+                    {item.label}
+                  </Typography>
+                </Paper>
+              </Link>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Image in the center */}
+        <Grid item xs={12} md={6} display="flex" justifyContent="center">
+          <Box
+            sx={{
+              borderRadius: 50,
+              overflow: "hidden",
+              width: 380,
+              height: 380
+            }}
           >
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/HealthValue.jpg"
+              alt="logo"
+              width={380}
+              height={380}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          </Box>
+        </Grid>
+
+        {/* Right Buttons (3) */}
+        <Grid item xs={12} md={3} container direction="column" spacing={2} justifyContent="center">
+          {options.slice(3).map((item) => (
+            <Grid item xs={12} key={item.label}>
+              <Link href={item.href} style={{ textDecoration: "none" }}>
+                <Paper
+                  elevation={4}
+                  sx={{
+                    mx: "auto",
+                    p: 4,
+                    height: "200px",
+                    width: "100%",
+                    textAlign: "center",
+                    borderRadius: 15,
+                    "&:hover": {
+                      backgroundColor: theme.palette.secondary.main,
+                      transform: "scale(1.05)",
+                      transition: "transform 0.4s ease-in-out",
+                      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
+                    },
+                    mt: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <item.icon sx={{ fontSize: 55 }} />
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      color: theme.palette.primary.main,
+                      fontSize: "1.6rem",
+                    }}
+                  >
+                    {item.label}
+                  </Typography>
+                </Paper>
+              </Link>
+            </Grid>
+          ))}
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
