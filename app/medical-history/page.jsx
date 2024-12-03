@@ -39,11 +39,11 @@ export default function MedicalDashboard() {
 
   const fetchPatientData = async (patientId) => {
     try {
-      const patientResponse = await axios.get(`http://patients_api:8004/api/v1/patient/${patientId}`);
+      const patientResponse = await axios.get(`http://localhost:8004/api/v1/patient/${patientId}`);
       setPatient(patientResponse.data);
 
       try {
-        const historyResponse = await axios.get(`http://patients_api:8004/api/v1/medicalappointments/${patientId}`);
+        const historyResponse = await axios.get(`http://localhost:8004/api/v1/medicalappointments/${patientId}`);
         setMedicalHistory(historyResponse.data);
         setError(false); 
       } catch (historyError) {

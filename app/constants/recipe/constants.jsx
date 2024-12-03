@@ -1,1 +1,1 @@
-export const RECIPE_API = "http://recipes_api:8006/recipe-api/v1/recipe";
+export const RECIPE_API = "http://localhost:8006/recipe-api/v1/recipe";

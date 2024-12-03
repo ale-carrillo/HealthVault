@@ -127,7 +127,7 @@ export default function TicketPage() {
   
   const fetchMeicalappointments = async () => {
     try {
-      const response = await axios.get("http://payments_api:8005/api/v1/recipe");
+      const response = await axios.get("http://localhost:8005/api/v1/recipe");
       setMeicalappointments(response.data); // Guardar los datos en el estado
       console.log(response.data); // Imprimir los datos en consola para depuración
     } catch (error) {
@@ -142,7 +142,7 @@ export default function TicketPage() {
 
   const fetchMedications = async () => {
     try {
-      const response = await axios.get("http://payments_api:8005/api/v1/medications");
+      const response = await axios.get("http://localhost:8005/api/v1/medications");
       setMeicalappointments(response.data); // Guardar los datos en el estado
       console.log(response.data); // Imprimir los datos en consola para depuración
     } catch (error) {

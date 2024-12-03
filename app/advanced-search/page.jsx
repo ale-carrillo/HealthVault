@@ -47,7 +47,7 @@ export default function AdvancePatientSearch() {
   
     try {
       const response = await axios.post(
-        "http://patients_api:8004/api/v1/patient/query",
+        "http://localhost:8004/api/v1/patient/query",
         { query: searchText }
       );
   

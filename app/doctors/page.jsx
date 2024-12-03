@@ -68,7 +68,7 @@ export default function DoctorsPage() {
     const fetchDoctors = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://doctors_api:8001/api/v1/doctors");
+        const response = await axios.get("http://localhost:8001/api/v1/doctors");
         setDoctors(response.data);
       } catch (err) {
         setError(err.response ? err.response.data.error : err.message);
@@ -179,7 +179,7 @@ export default function DoctorsPage() {
     };
 
     try {
-      const response = await axios.post("http://doctors_api:8001/api/v1/doctors", doctorPayload);
+      const response = await axios.post("http://localhost:8001/api/v1/doctors", doctorPayload);
       console.log("Doctor registered:", response.data);
       setNewDoctor({
         name: "",
@@ -206,13 +206,13 @@ export default function DoctorsPage() {
 
   const handleDeleteDoctor = async (doctorId) => {
     try {
-      const response = await axios.delete(`http://doctors_api:8001/api/v1/doctors/${doctorId}`);
+      const response = await axios.delete(`http://localhost:8001/api/v1/doctors/${doctorId}`);
       
       if (response.status === 200) {
         // Actualizamos la lista de doctores después de la eliminación
         const fetchDoctors = async () => {
           try {
-            const response = await axios.get("http://doctors_api:8001/api/v1/doctors");
+            const response = await axios.get("http://localhost:8001/api/v1/doctors");
             setDoctors(response.data);
           } catch (err) {
             setError(err.response ? err.response.data.error : err.message);

@@ -1,1 +1,1 @@
-export const MEDICATIONS_API = "http://medications_api:8002/api/v1/medications";
+export const MEDICATIONS_API = "http://localhost:8002/api/v1/medications";
