@@ -9,11 +9,14 @@ import { useState, useEffect  } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Alerts from "../components/alerts";
 import MedicalAppointmentDialog from "../components/medical-appointments-dialog";
+import Link from "next/link"
 
 {/*Importing Material-UI Icons*/}
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
+import CancelIcon from '@mui/icons-material/Cancel';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import PaymentIcon from '@mui/icons-material/Payment';
 
 import axios from "axios";
 import { MEDICALAPPOINTMENTS_API } from "../constants/medical-appointments/constants";
@@ -33,8 +36,12 @@ export default function MedicalAppointment() {
 
       renderCell: (params) => (
         <Chip
-          label={params.value ? "Complete" : "Pending"} 
-          color={params.value ? "success" : "warning"}
+          label={params.value}
+          color={
+            params.value === "Cancelled" ? "error" :
+            params.value === "Pending" ? "warning" : "success"
+          }
+
           sx={{ color: "#FFF", fontWeight: "bold"  }}
         />
       ),
@@ -43,21 +50,45 @@ export default function MedicalAppointment() {
     {
       field: "actions",
       headerName: "Actions",
-      width: 100,
+      width: 150,
       renderCell: (params) => (
         <Box>
-          <IconButton
-            color="primary"
-            onClick={() => handleMedicalAppointment({ action: "edit", medicalappointment: params.row })}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            color="secondary"
-            onClick={() => deleteMedicalAppointment(params.row._id)}
-          >
-            <DeleteIcon />
-          </IconButton>
+          {params.row.status === "Pending" && (
+            <>
+              <Link href={`/recipes?id=${params.row._id}`}>
+                <IconButton
+                  color="primary"
+                >
+                  <AssignmentIcon />
+                </IconButton>  
+              </Link>
+              <IconButton
+                color="primary"
+                onClick={() => handleMedicalAppointment({ action: "edit", medicalappointment: params.row })}
+              >
+                <EditIcon />
+              </IconButton>
+              <IconButton
+                color="secondary"
+                onClick={() => cancelMedicalAppointment(params.row._id, params.row)}
+              >
+                <CancelIcon />
+              </IconButton>
+
+            </>
+          )}
+          {params.row.status==="Completed" && (
+            <>
+              <Link href={`/payments?id=${params.row.recipe_id}`}>
+                <IconButton
+                  color="primary"
+                >
+                  <PaymentIcon />
+                </IconButton>  
+              </Link>
+     
+            </>
+          )}
         </Box>
       ),
     },
@@ -72,11 +103,78 @@ export default function MedicalAppointment() {
     patient: "",
     doctor: "",
     reason: "",
-    status: true,
+    status: "",
   });
 
   const [openDialog, setOpenDialog] = useState(false);
 
+
+  {/*For search patients*/}
+  const [selectedPatient, setselectedPatient] = useState({});
+
+  const handlePatientsChange = (event, newValue) => {
+      setselectedPatient(newValue);
+      if (newValue) {
+        console.log('Selected patient ID:', newValue._id);
+      } else {
+        console.log('No patient selected');
+      }
+  };
+
+  const [patientsList, setPatientsList] = useState([]);
+
+  useEffect(() => {
+    fetchPatientsList();
+    fetchDoctorsList();
+  }, []);
+
+  const fetchPatientsList = async () => {
+    try {
+        const response = await axios.get(`${MEDICALAPPOINTMENTS_API}/patients`)
+        setPatientsList(response.data)
+        console.log(response.data)
+    }
+    catch (error){
+        console.warn("Error fetching patients list:", error);
+        setAlert({
+            message: "Failed to load patients list",
+            severity: "error"
+        });
+        setOpenAlert(true);
+    }
+  };
+
+
+  {/*For search doctors*/}
+  const [selectedDoctor, setselectedDoctor] = useState({});
+
+  const handleDoctorsChange = (event, newValue) => {
+      setselectedDoctor(newValue);
+      if (newValue) {
+        console.log('Selected doctor ID:', newValue._id);
+      } else {
+        console.log('No doctor selected');
+      }
+  };
+
+  const [doctorsList, setDoctorsList] = useState([]);
+
+
+  const fetchDoctorsList = async () => {
+    try {
+        const response = await axios.get(`${MEDICALAPPOINTMENTS_API}/doctors`)
+        setDoctorsList(response.data)
+        console.log(response.data)
+    }
+    catch (error){
+        console.warn("Error fetching doctors list:", error);
+        setAlert({
+            message: "Failed to load doctors list",
+            severity: "error"
+        });
+        setOpenAlert(true);
+    }
+  };
 
   {/*Function to handle medicalappointment actions*/}
   const handleMedicalAppointment = ({ action, medicalappointment }) => {
@@ -91,34 +189,54 @@ export default function MedicalAppointment() {
         patient: "",
         doctor: "",
         reason: "",
-        status: false,
+        status: "Pending",
       });
+      setselectedDoctor(null);
+      setselectedPatient(null);
     } else if (action == "edit") {
       console.info("Medical Appointment details:", medicalappointment);
       console.info("Preparing to edit a new medicalappointment");
+
+      const selectedDoctor = doctorsList.find(
+        (doctor) => doctor._id === medicalappointment.doctor_id
+      );
+
+      const selectedPatient = patientsList.find(
+        (patient) => patient._id === medicalappointment.patient_id
+      );
+
+      setselectedDoctor(selectedDoctor || null);
+      setselectedPatient(selectedPatient || null);
+
       setMedicalAppointment(medicalappointment);
+
     } else {
       console.warn("Unknown action:", action);
     }
   };
 
   {/*Function to delete a medicalappointment*/}
-  const deleteMedicalAppointment = async(id) => {
-
+  const cancelMedicalAppointment = async(_id, medicalappointment) => {
     try {
-      await axios.delete(`${MEDICALAPPOINTMENTS_API}/${id}`);
-      setRows(rows.filter((row) => row._id !== id));
-      setAlert({
-          message: "Medical Appointment deleted successfully!",
-          severity: "success",
+      const response = await axios.put(`${MEDICALAPPOINTMENTS_API}/${_id}`, {
+        ...medicalappointment, 
+        status: "Cancelled"  
       });
-      setOpenAlert(true);
-      console.info("Medical Appointment deleted successfully!");
-    }
-    catch (error) {
-        console.error("Error deleting medicalappointment:", error);
+
+      setRows(rows.map((row) => 
+        row._id === _id ? { ...row, status: "Cancelled" } : row
+      ));
         setAlert({
-          message: "Failed to delete medicalappointment",
+            message: "Medical Appointment cancelled successfully!",
+            severity: "success",
+        });
+        setOpenAlert(true);
+        console.info("Medical Appointment cancelled successfully!");
+      }
+    catch (error) {
+        console.error("Error cancelling medicalappointment:", error);
+        setAlert({
+          message: "Failed to cancel medicalappointment",
           severity: "error"
         });
         setOpenAlert(true);
@@ -236,6 +354,18 @@ const fetchMedicalAppointment = async () => {
         setOpen={setOpenDialog}
         medicalappointment={medicalappointment}
         setMedicalAppointment={setMedicalAppointment}
+        selectedPatient={selectedPatient} 
+        setselectedPatient={setselectedPatient}
+        handlePatientsChange={handlePatientsChange}
+        patientsList = {patientsList}
+        setPatientsList={setPatientsList}
+        fetchPatientsList={fetchPatientsList}
+        selectedDoctor={selectedDoctor}
+        setselectedDoctor={setselectedDoctor}
+        handleDoctorsChange={handleDoctorsChange}
+        doctorsList={doctorsList}
+        setDoctorsList={setDoctorsList}
+        fetchDoctorsList={fetchDoctorsList}
         action={action}
         rows={rows}
         setRows={setRows}

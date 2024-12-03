@@ -39,81 +39,23 @@ export default function MedicalAppointmentDialog({
   rows,
   setRows,
   setAlert,
-  setOpenAlert,
+  setOpenAlert,       
+  selectedPatient,
+  setselectedPatient,
+  handlePatientsChange,
+  patientsList,
+  setPatientsList,
+  fetchPatientsList,
+  selectedDoctor,
+  setselectedDoctor,
+  handleDoctorsChange,
+  doctorsList,
+  setDoctorsList,
+  fetchDoctorsList
 }) {
 
   {/*Theme*/}
   const theme = useTheme();
-
-  {/*For search patients*/}
-  const [selectedPatient, setselectedPatient] = useState({});
-
-  const handlePatientsChange = (event, newValue) => {
-      setselectedPatient(newValue);
-      if (newValue) {
-        console.log('Selected patient ID:', newValue._id);
-      } else {
-        console.log('No patient selected');
-      }
-  };
-
-  const [patientsList, setPatientsList] = useState([]);
-
-  useEffect(() => {
-    fetchPatientsList();
-  }, []);
-
-  const fetchPatientsList = async () => {
-    try {
-        const response = await axios.get(`${MEDICALAPPOINTMENTS_API}/patients`)
-        setPatientsList(response.data)
-        console.log(response.data)
-    }
-    catch (error){
-        console.warn("Error fetching patients list:", error);
-        setAlert({
-            message: "Failed to load patients list",
-            severity: "error"
-        });
-        setOpenAlert(true);
-    }
-  };
-
-
-  {/*For search doctors*/}
-  const [selectedDoctor, setselectedDoctor] = useState({});
-
-  const handleDoctorsChange = (event, newValue) => {
-      setselectedDoctor(newValue);
-      if (newValue) {
-        console.log('Selected doctor ID:', newValue._id);
-      } else {
-        console.log('No doctor selected');
-      }
-  };
-
-  const [doctorsList, setDoctorsList] = useState([]);
-
-  useEffect(() => {
-    fetchDoctorsList();
-  }, []);
-
-  const fetchDoctorsList = async () => {
-    try {
-        const response = await axios.get(`${MEDICALAPPOINTMENTS_API}/doctors`)
-        setDoctorsList(response.data)
-        console.log(response.data)
-    }
-    catch (error){
-        console.warn("Error fetching doctors list:", error);
-        setAlert({
-            message: "Failed to load doctors list",
-            severity: "error"
-        });
-        setOpenAlert(true);
-    }
-  };
-
 
   {/*Function to close the dialog*/}
   const handleCloseDialog = () => {
@@ -129,7 +71,7 @@ export default function MedicalAppointmentDialog({
   });
 
   {/*Function to save the medicalappointment*/}
-  const saveReservation = async () => {
+  const saveMedicalAppointment = async () => {
     
     const patientNoValid = !selectedPatient || !selectedPatient.name;
     const doctorNoValid = !selectedDoctor || !selectedDoctor.name;
@@ -157,7 +99,9 @@ export default function MedicalAppointmentDialog({
        ...medicalappointment,
        date: combinedDateTime.format("DD MMM YYYY HH:mm"),
        patient: selectedPatient.name,
-       doctor: selectedDoctor.name
+       patient_id: selectedPatient._id,
+       doctor: selectedDoctor.name,
+       doctor_id: selectedDoctor._id
     };
  
     if (action === "add") {
@@ -388,7 +332,7 @@ useEffect(() => {
                     getOptionLabel={(option) => option.name || 'Name required'}
                     renderInput={(params) => (
                     <TextField {...params}
-                    label="Select a patient"
+                    label="Select a patient (required)"
                     variant="outlined"
                     error={fieldErrors.patient}
                     helperText={fieldErrors.patient ? "Patient is required" : ""}
@@ -414,7 +358,7 @@ useEffect(() => {
                     options={doctorsList}
                     getOptionLabel={(option) => option.name || 'Name required'}
                     renderInput={(params) => (
-                    <TextField {...params} label="Select a doctor" variant="outlined"
+                    <TextField {...params} label="Select a doctor (required)" variant="outlined"
                     
                     error={fieldErrors.doctor}
                     helperText={fieldErrors.doctor ? "Doctor is required" : ""} />
@@ -433,7 +377,7 @@ useEffect(() => {
                 </Grid>
                 <Grid size={{ xs: 12, md: 11 }}>
                   <TextField
-                    label="Reason required*"
+                    label="Reason (required)"
                     variant="filled"
                     color="primary"
                     fullWidth
@@ -464,7 +408,7 @@ useEffect(() => {
         <Button onClick={handleCloseDialog} color="secondary">
           Cancel
         </Button>
-        <Button onClick={saveReservation} color="primary" variant="contained" >
+        <Button onClick={saveMedicalAppointment} color="primary" variant="contained" >
           {action === "add" ? "Add" : "Edit"}
         </Button>
       </DialogActions>
