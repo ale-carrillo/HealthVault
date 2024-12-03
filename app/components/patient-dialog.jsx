@@ -72,11 +72,11 @@ export default function PatientDialog({
         if (!validateStep()) return;
 
         if (action === "add") {
-            const response = await axios.post("http://127.0.0.1:5000/api/v1/patient",patient)
+            const response = await axios.post("http://patients_api:8004/api/v1/patient",patient)
             setRows((prevRows) => [...prevRows, response.data]);
             setAlert({ message: "Patient added successfully", severity: "success" });
         } else if (action === "edit") {
-            const response = await axios.put(`http://127.0.0.1:5000/api/v1/patient/${patient._id}`,patient)
+            const response = await axios.put(`http://patients_api:8004/api/v1/patient/${patient._id}`,patient)
             if (response.data === "The patient is already up-to-date") {
                 setAlert({
                   message: "No changes were made, the employee is already up-to-date.",

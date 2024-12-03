@@ -115,7 +115,7 @@ const search = useSearchParams()  // Access to url query
     // When loading the page get the recipes in  database
     useEffect(() => {
         fectchAppointment();
-  }, []);
+  }, [search]);
 
 
   const fectchAppointment = async () => {

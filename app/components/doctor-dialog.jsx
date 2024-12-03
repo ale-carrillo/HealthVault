@@ -30,7 +30,7 @@ export default function EditDoctorDialog({ open, onClose, doctor, onSave }) {
 
       // Realizar el PUT para actualizar el doctor completo
       const response = await axios.put(
-        `http://127.0.0.1:5000/api/v1/doctors/${doctor._id}`,
+        `http://doctors_api:8001/api/v1/doctors/${doctor._id}`,
         updatedDoctor
       );
 

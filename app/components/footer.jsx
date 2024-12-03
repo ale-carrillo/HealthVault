@@ -30,7 +30,7 @@ export default function Footer() {
               }}
             >
               <Image
-                src="/logo.jpg"
+                src="/healthvault.png"
                 alt="HealthValue Logo"
                 width={100}
                 height={100}

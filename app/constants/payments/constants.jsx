@@ -1,0 +1,1 @@
+export const PAYMENTS_API = "http://payments_api:8005/api/v1/payments";

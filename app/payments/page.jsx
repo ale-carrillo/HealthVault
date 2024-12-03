@@ -14,7 +14,6 @@ import {
   MenuItem, Box,
   FormControl, InputLabel, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
-import { orders as initialOrders } from '../constants/home/orders'; // Ajusta la ruta de las órdenes
 import Grid from "@mui/material/Grid2";
 import Alerts from '../components/alerts'; // Importa el componente de alertas
 import { PAYMENTS_API } from '../constants/payments/constants';
@@ -29,7 +28,6 @@ export default function TicketPage() {
   const [fiscalData, setFiscalData] = useState({ rfc: '' }); // Estado para los datos fiscales
   const [alertMessage, setAlertMessage] = useState({ severity: "success", message: "" });
   const [openAlert, setOpenAlert] = useState(false); // Estado para mostrar las alertas
-  const [orders, setOrders] = useState(initialOrders); // Inicializa el estado de las órdenes con constantes
   const [medicamentosList, setMedicamentosList] = useState([]); // Estado para medicamentos del paciente
   const [availableMedicamentos, setAvailableMedicamentos] = useState([]); // Estado para medicamentos disponibles
   const [selectedId, setSelectedId] = useState(''); // Estado para el ID seleccionado
@@ -129,7 +127,7 @@ export default function TicketPage() {
   
   const fetchMeicalappointments = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/api/v1/recipe");
+      const response = await axios.get("http://payments_api:8005/api/v1/recipe");
       setMeicalappointments(response.data); // Guardar los datos en el estado
       console.log(response.data); // Imprimir los datos en consola para depuración
     } catch (error) {
@@ -144,7 +142,7 @@ export default function TicketPage() {
 
   const fetchMedications = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/api/v1/medications");
+      const response = await axios.get("http://payments_api:8005/api/v1/medications");
       setMeicalappointments(response.data); // Guardar los datos en el estado
       console.log(response.data); // Imprimir los datos en consola para depuración
     } catch (error) {
