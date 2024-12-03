@@ -1,0 +1,1 @@
+export const MEDICATIONS_API = "http://localhost:8002/api/v1/medications";

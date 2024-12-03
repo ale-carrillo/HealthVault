@@ -1,0 +1,1 @@
+export const PAYMENTS_API = "http://localhost:8005/api/v1/payments";
