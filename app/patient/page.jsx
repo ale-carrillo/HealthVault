@@ -80,7 +80,7 @@ export default function PatientTable() {
 
       const fetchPatients = async () => {
         try {
-          const response = await axios.get("http://patients_api:8004/api/v1/patient");
+          const response = await axios.get("http://localhost:8004/api/v1/patient");
           const mappedRows = response.data.map((row) => ({ ...row, id: row._id })); 
           setRows(mappedRows);
         } catch (error) {
@@ -293,14 +293,14 @@ export default function PatientTable() {
     const handleSave = async (newPatient) => {
         try {
             if (action === "add") {
-                const response = await axios.post("http://patients_api:8004/api/v1/patient", newPatient);
+                const response = await axios.post("http://localhost:8004/api/v1/patient", newPatient);
                 setRows((prevRows) => [...prevRows,  response.data]);
                 setAlert({
                     message: "Patient added successfully",
                     severity: "success",
                 });
             } else if (action === "edit") {
-                const response = await axios.put(`http://patients_api:8004/api/v1/patient/${newPatient._id}`, newPatient);
+                const response = await axios.put(`http://localhost:8004/api/v1/patient/${newPatient._id}`, newPatient);
                 setRows((prevRows) =>
                     prevRows.map((row) =>
                         row._id === newPatient._id
@@ -325,7 +325,7 @@ export default function PatientTable() {
 
     const handleDelete =async (id) => {
         try {
-            await axios.delete(`http://patients_api:8004/api/v1/patient/${id}`);
+            await axios.delete(`http://localhost:8004/api/v1/patient/${id}`);
             setRows(rows.filter((row) => row._id !== id));
             setAlert({
                 message: "Patient deleted successfully",
