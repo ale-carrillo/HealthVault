@@ -1,1 +1,1 @@
-export const DOCTORS_API = "http://127.0.0.1:5000/api/v1/doctors";
+export const DOCTORS_API = "http://doctors_api:8001/api/v1/doctors";

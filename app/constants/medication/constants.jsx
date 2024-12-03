@@ -1,1 +1,1 @@
-export const MEDICATIONS_API = "http://127.0.0.1:5000/api/v1/medications";
+export const MEDICATIONS_API = "http://medications_api:8002/api/v1/medications";

@@ -15,7 +15,6 @@ import PatientCard from '../components/patient-card';
 export default function MedicalDashboard() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const id = searchParams.get('id');
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
   const [patient, setPatient] = useState(null);
@@ -32,18 +31,19 @@ export default function MedicalDashboard() {
   );
 
   useEffect(() => {
+    const id = searchParams.get('id');
     if (id) {
       fetchPatientData(id);
     }
-  }, [id]);
+  }, [searchParams]);
 
   const fetchPatientData = async (patientId) => {
     try {
-      const patientResponse = await axios.get(`http://127.0.0.1:5000/api/v1/patient/${patientId}`);
+      const patientResponse = await axios.get(`http://patients_api:8004/api/v1/patient/${patientId}`);
       setPatient(patientResponse.data);
 
       try {
-        const historyResponse = await axios.get(`http://127.0.0.1:5000/api/v1/medicalappointments/${patientId}`);
+        const historyResponse = await axios.get(`http://patients_api:8004/api/v1/medicalappointments/${patientId}`);
         setMedicalHistory(historyResponse.data);
         setError(false); 
       } catch (historyError) {

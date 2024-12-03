@@ -16,7 +16,7 @@ import {
   import PhoneIcon from "@mui/icons-material/Phone";
   import EmailIcon from "@mui/icons-material/Email";
   import { useState, useEffect } from "react";
-  import EditDoctorDialog from "./DoctorDialog";
+  import EditDoctorDialog from "./doctor-dialog";
   import axios from "axios";
   
   export default function DoctorProfile({ doctor, onDeleteDoctor }) {

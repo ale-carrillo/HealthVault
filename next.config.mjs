@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-      domains: ["i.pravatar.cc"], // Agrega aquí el dominio permitido
+    output: "standalone",
+    experimental: {
+      missingSuspenseWithCSRBailout: false,
     },
   };
   
