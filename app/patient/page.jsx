@@ -28,6 +28,8 @@ import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import { useRouter } from "next/navigation";
 import ConfirmDialog from "../components/confirmation-dialog";
 import SearchIcon from '@mui/icons-material/Search';
+import axios from "axios";
+import { useEffect } from "react";
 
 export default function PatientTable() {
     const [selectedRow, setSelectedRow] = useState(null);
@@ -39,17 +41,18 @@ export default function PatientTable() {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [action, setAction] = useState("");
     const router = useRouter();
+    
 
 
     const [patient, setPatient] = useState({
         avatar: "",
         name: "",
         lastName: "",
-        weight: "",
-        height: "",
-        heartrate: "",
+        weight: 0,
+        height: 0,
+        heartrate: 0,
         bloodPressure: "",
-        sugarBlood: "",
+        sugarBlood: 0,
         birthDate: "",
         phone: "",
         email: "",
@@ -64,57 +67,32 @@ export default function PatientTable() {
     });
 
 
-    const [rows, setRows] = useState([
-        {
-            _id: 1,
-            avatar: "https://i.pravatar.cc/150?img=1",
-            name: "Juan",
-            lastName: "Pérez",
-            weight: 78,
-            height: 1.75,
-            heartrate: 90,
-            bloodPressure: 120,
-            sugarBlood: 80,
-            birthDate: "1990-05-15",
-            phone: "+525551234567",
-            email: "juan.perez@example.com",
-            bloodType: "O+",
-            allergies: "Ninguna",
-            gender: "Male",
-            familyHistory: "Diabetes",
-            medicalHistory: "Hipertensión",
-            emergencyContact: "Ana Pérez",
-            emergencyPhone: "+525551234567",
-            socialSecurity: "1234567890",
-        },
-        {
-            _id: 2,
-            avatar: "https://i.pravatar.cc/150?img=2",
-            name: "María",
-            lastName: "López",
-            weight: 78,
-            height: 1.75,
-            heartrate: 90,
-            bloodPressure: 120,
-            sugarBlood: 80,
-            birthDate: "1985-10-10",
-            phone: "+525551234567",
-            email: "maria.lopez@example.com",
-            bloodType: "A-",
-            allergies: "Penicilina",
-            gender: "Female",
-            familyHistory: "Hipertensión",
-            medicalHistory: "Asma",
-            emergencyContact: "Carlos López",
-            emergencyPhone: "+525551234567",
-            socialSecurity: "0987654321",
-        },
-    ]);
+    const [rows, setRows] = useState([]);
 
     const [alert, setAlert] = useState({
         message: "",
         severity: "",
     });
+
+    useEffect(() => {
+        fetchPatients();
+      }, []);
+
+      const fetchPatients = async () => {
+        try {
+          const response = await axios.get("http://127.0.0.1:5000/api/v1/patient");
+          const mappedRows = response.data.map((row) => ({ ...row, id: row._id })); 
+          setRows(mappedRows);
+        } catch (error) {
+          setAlert({
+            message: "Failed to fetch patients",
+            severity: "error",
+          });
+          setOpenAlert(true);
+        }
+    
+      };
+    
 
     const getCountryCode = (phone) => {
         if (!phone) return "US";
@@ -273,7 +251,6 @@ export default function PatientTable() {
         {
             field: "actions",
             headerClassName: 'super-app-theme--header',
-            headerAlign: 'center',
             headerName: "Acciones",
             width: 150,
             renderCell: (params) => (
@@ -313,16 +290,17 @@ export default function PatientTable() {
 
 
 
-    const handleSave = (newPatient) => {
+    const handleSave = async (newPatient) => {
         try {
             if (action === "add") {
-                const newId = rows.length > 0 ? Math.max(...rows.map((r) => r._id)) + 1 : 1;
-                setRows((prevRows) => [...prevRows, { ...newPatient, _id: newId }]);
+                const response = await axios.post("http://127.0.0.1:5000/api/v1/patient", newPatient);
+                setRows((prevRows) => [...prevRows,  response.data]);
                 setAlert({
                     message: "Patient added successfully",
                     severity: "success",
                 });
             } else if (action === "edit") {
+                const response = await axios.put(`http://127.0.0.1:5000/api/v1/patient/${newPatient._id}`, newPatient);
                 setRows((prevRows) =>
                     prevRows.map((row) =>
                         row._id === newPatient._id
@@ -345,8 +323,9 @@ export default function PatientTable() {
         setOpenAlert(true);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete =async (id) => {
         try {
+            await axios.delete(`http://127.0.0.1:5000/api/v1/patient/${id}`);
             setRows(rows.filter((row) => row._id !== id));
             setAlert({
                 message: "Patient deleted successfully",

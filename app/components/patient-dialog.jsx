@@ -20,6 +20,8 @@ import {
 
 } from "@mui/material";
 import Image from "next/image";
+import axios from "axios";
+
 
 export default function PatientDialog({
     open,
@@ -35,6 +37,9 @@ export default function PatientDialog({
     const [activeStep, setActiveStep] = useState(0);
     const [previewAvatar, setPreviewAvatar] = useState(patient.avatar || "");
     const [errors, setErrors] = useState({});
+    useEffect(() => {
+        setPreviewAvatar(patient.avatar || "");
+      }, [patient, open]);
 
     const steps = ["Basic Info", "Contact Info", "Medical Info", "Avatar"];
 
@@ -59,17 +64,28 @@ export default function PatientDialog({
     const handleCloseDialog = () => {
         setOpen(false);
         setActiveStep(0);
+        setPreviewAvatar(patient.avatar || "");
         setErrors({});
     };
 
-    const savePatient = () => {
+    const savePatient = async () => {
         if (!validateStep()) return;
 
         if (action === "add") {
-            const newId = rows.length > 0 ? Math.max(...rows.map((r) => r._id)) + 1 : 1;
-            setRows((prevRows) => [...prevRows, { ...patient, _id: newId }]);
+            const response = await axios.post("http://127.0.0.1:5000/api/v1/patient",patient)
+            setRows((prevRows) => [...prevRows, response.data]);
             setAlert({ message: "Patient added successfully", severity: "success" });
         } else if (action === "edit") {
+            const response = await axios.put(`http://127.0.0.1:5000/api/v1/patient/${patient._id}`,patient)
+            if (response.data === "The patient is already up-to-date") {
+                setAlert({
+                  message: "No changes were made, the employee is already up-to-date.",
+                  severity: "info",
+                });
+                setOpen(false);
+                setOpenAlert(true);
+                return;
+              }
             setRows((prevRows) =>
                 prevRows.map((row) => (row._id === patient._id ? { ...patient } : row))
             );
@@ -107,8 +123,14 @@ export default function PatientDialog({
                 newErrors.height = "Enter a valid height in meters (0-2.5).";
             if (!patient.heartrate || patient.heartRate <= 0 || patient.heartRate > 200)
                 newErrors.heartrate = "Enter a valid heart rate in bpm (0-200).";
-            if (!patient.bloodPressure || patient.bloodPressure <= 0 || patient.bloodPressure > 200)
-                newErrors.bloodPressure = "Enter a valid blood pressure in mmHg (0-200).";
+            if (!patient.bloodPressure || !/^\d{1,3}\/\d{1,3}$/.test(patient.bloodPressure)) {
+                newErrors.bloodPressure = "Enter a valid blood pressure in the format '120/80'.";
+            } else {
+                const [systolic, diastolic] = patient.bloodPressure.split("/").map(Number);
+                if (systolic <= 0 || systolic > 300 || diastolic <= 0 || diastolic > 200) {
+                    newErrors.bloodPressure = "Systolic should be 1-300, and diastolic 1-200.";
+                }
+            }
             if (!patient.sugarBlood || patient.sugarBlood <= 0 || patient.sugarBlood > 200)
                 newErrors.sugarBlood = "Enter a valid sugar blood in mg/dL (0-200).";
 
@@ -240,6 +262,15 @@ export default function PatientDialog({
                             helperText={errors.emergencyPhone}
                             variant="outlined"
                         />
+                        <TextField
+                            name="socialSecurity"
+                            label="Social Security"
+                            fullWidth
+                            margin="normal"
+                            value={patient.socialSecurity || ""}
+                            onChange={handleChange}
+                           
+                        />
 
                     </Box>
                 );
@@ -312,7 +343,7 @@ export default function PatientDialog({
                         />
 
                         <TextField
-                            name='heartRate'
+                            name='heartrate'
                             label='Heart Rate'
                             fullWidth
                             margin='normal'
@@ -320,8 +351,8 @@ export default function PatientDialog({
                             value={patient.heartrate || ''}
                             onChange={(event) => {
                                 const value = event.target.value;
-                                if (!isNaN(value) && value >= 0 && value <= 200) {
-                                    handleChange(event); 
+                                if (/^\d*$/.test(value)) { 
+                                    handleChange({ target: { name: "heartrate", value } });
                                 }
                             }}
                             error={!!errors.heartrate}
@@ -332,16 +363,16 @@ export default function PatientDialog({
                             }}
                         />
                         <TextField
-                            name='bloodPressure'
-                            label='Blood Pressure'
+                            name="bloodPressure"
+                            label="Blood Pressure"
                             fullWidth
-                            margin='normal'
-                            type='number'
-                            value={patient.bloodPressure || ''}
+                            margin="normal"
+                            type="text"
+                            value={patient.bloodPressure || ""}
                             onChange={(event) => {
                                 const value = event.target.value;
-                                if (!isNaN(value) && value >= 0 && value <= 200) {
-                                    handleChange(event); 
+                                if (/^\d*\/?\d*$/.test(value)) {
+                                    handleChange(event);
                                 }
                             }}
                             error={!!errors.bloodPressure}
