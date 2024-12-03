@@ -25,5 +25,4 @@ export default function Alerts({ open, setOpen, alert }) {
     </Snackbar>
   );
 
-
 }
