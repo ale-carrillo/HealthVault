@@ -55,7 +55,7 @@ export default function MedicalAppointment() {
         <Box>
           {params.row.status === "Pending" && (
             <>
-              <Link href={`/recipes?id=${params.row._id}`}>
+              <Link href={`/recipe?id=${params.row._id}`}>
                 <IconButton
                   color="primary"
                 >

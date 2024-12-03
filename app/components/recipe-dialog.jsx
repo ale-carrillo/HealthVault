@@ -75,6 +75,7 @@ import {
         patient_id:appointment.patient_id,
         medication: selectedMedication.name,
         medication_id: selectedMedication._id,
+        appointment_id: appointment.appointment_id,
       };
   
       // Select if add the Recipe.
